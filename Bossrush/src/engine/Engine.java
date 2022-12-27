@@ -37,32 +37,35 @@ public class Engine {
 		g.setColor(Color.CYAN);
 
 		//draw floor if we can see it. Floor = (0,0) + camera offset
-		int floor = GUIUtils.ss(Vec2.ZERO, screen_dim).add(camera_offset).getYi();
+		int floor = GUIUtils.ss(Vec2.ZERO, screen_dim, scale).add(camera_offset).getYi();
 		g.drawLine(0, floor, screen_dim.getXi(), floor);
 		
 		//draw left wall
-		int left = GUIUtils.ss(Vec2.ZERO, screen_dim).add(camera_offset).getXi();
+		int left = GUIUtils.ss(Vec2.ZERO, screen_dim, scale).add(camera_offset).getXi();
 		g.drawLine(left, 0, left, screen_dim.getYi());
 		
 		//draw right wall
-		int right = GUIUtils.ss(new Vec2(stage_dim.getX(), 0), screen_dim).add(camera_offset).getXi();
+		int right = GUIUtils.ss(new Vec2(stage_dim.getX(), 0), screen_dim, scale).add(camera_offset).getXi();
 		g.drawLine(right - 1, 0, right - 1, screen_dim.getYi());
 
 		//draw top wall (out of frame)
-		int top = GUIUtils.ss(new Vec2(0, stage_dim.getY()), screen_dim).add(camera_offset).getYi();
+		int top = GUIUtils.ss(new Vec2(0, stage_dim.getY()), screen_dim, scale).add(camera_offset).getYi();
 		g.drawLine(0, top + 1, screen_dim.getXi(), top + 1);
 		g.setColor(Color.CYAN);
 	}
 	
 	public void render(Graphics g) {
+		g.setColor(Color.BLACK);
+        g.fillRect(0, 0, screen_dim.getXi(), screen_dim.getYi());
+		
 		Vec2 offs = GUIUtils.cameraOffsetSS(
-			screen_dim, stage_dim, actors.get(0).getPos(), actors.get(0).getSize(), screen_behavior
+			screen_dim, stage_dim, actors.get(0).getPos(), actors.get(0).getSize(), scale, screen_behavior
 		);
 		
 		drawBoundingBox(g, offs);
 		
 		for(Actor a : actors) {
-			a.render(g, screen_dim, offs);
+			a.render(g, screen_dim, offs, scale);
 		}
 	}
 	
@@ -84,6 +87,18 @@ public class Engine {
 
 	public void configureScreenSize(int width, int height) {
 		this.screen_dim = new Vec2(width, height);
+	}
+	
+	public Vec2 getScreenSize() {
+		return this.screen_dim;
+	}
+	
+	public Vec2 getStageSize() {
+		return this.stage_dim;
+	}
+	
+	public Vec2 getScale() {
+		return this.scale;
 	}
 	
 	public void configureStageSize(int width, int height) {

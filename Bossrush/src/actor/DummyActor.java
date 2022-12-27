@@ -28,14 +28,8 @@ public class DummyActor extends Actor {
 	}
 
 	@Override
-	public void render(Graphics g, Vec2 screenSize, Vec2 camera_offset) {
-		g.setColor(Engine.affiliationColor(getAffiliation()));
-		
-		Vec2 ssStart = GUIUtils.ss(getPos().addY(getSize()), screenSize);
-		ssStart = ssStart.add(camera_offset);
-		
-		//Draw our bounding box
-		g.drawRect(ssStart.getXi(), ssStart.getYi(), getSize().getXi(), getSize().getYi());
+	public void render(Graphics g, Vec2 screenSize, Vec2 camera_offset, Vec2 scale) {
+		super.render(g, screenSize, camera_offset, scale);
 	}
 
 	@Override

@@ -3,6 +3,8 @@ package ui;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.geom.Point2D.Double;
@@ -22,8 +24,8 @@ public class GUI extends JComponent implements KeyListener {
 
 	private static final int MAJOR = 0, MINOR = 2, REVISION = 0;
 	private static final long serialVersionUID = 1L;
-	private static final int WIDTH = 500; //750; //1200;
-    private static final int HEIGHT = 300; //750;
+	private static final int WIDTH = 500 ; //500; 750; //1200;
+    private static final int HEIGHT = 300; //300; //450; //750;
     public static final int UPDATE_INTERVAL = 17;  // in milliseconds
 
     private static Engine engine;
@@ -32,11 +34,14 @@ public class GUI extends JComponent implements KeyListener {
     	
     	//setup the game
     	engine = new Engine();
-    	engine.configureStageSize(900, 500); //(int)(HEIGHT * (5. / 6)));
+    	//engine.configureStageSize(WIDTH, (int)(HEIGHT * (5. / 6))); //(900, 500); 
+    	//engine.configureScreenSize(WIDTH, HEIGHT);
+    	engine.configureStageSize((int)(1.5 * WIDTH), (int)(1.5 * HEIGHT));
     	engine.configureScreenSize(WIDTH, HEIGHT);
+    	
     	engine.configureScreenBehavior(SCREEN_BEHAVIOR.SCROLL_XY);
-    	engine.configureScale(1.5, null);
-    	engine.addActor(new PlayerActor(new Vec2(250, 0), new Vec2(50, 50), AFFILIATION.BLUE, "one"));
+    	engine.configureScale(1.0, 1.0);
+    	engine.addActor(new PlayerActor(new Vec2(0, 0), new Vec2(50, 50), AFFILIATION.BLUE, "one"));
     	
     	//prey
     	//engine.addActor(new DummyActor(new Vec2(300, 0), new Vec2(50, 100), AFFILIATION.RED,  "two"));
@@ -69,10 +74,23 @@ public class GUI extends JComponent implements KeyListener {
         component.setPreferredSize(new Dimension(WIDTH, HEIGHT));
         component.addKeyListener((KeyListener) component);
         component.setFocusable(true);
+        component.addComponentListener(new ComponentAdapter() {
+        	
+	        @Override
+	        public void componentResized(ComponentEvent e) {
+	        	Vec2 newSize  = new Vec2(e.getComponent().getSize());
+	        	Vec2 newScale = new Vec2(newSize.getX() / WIDTH, newSize.getY() / HEIGHT);
+	        	engine.configureScale(newScale.getX(), newScale.getY());
+	        	engine.configureScreenSize(newSize.getXi(), newSize.getYi());
+	        }
+	        
+        });
 
+        
         frame.add(component);
         frame.pack();
         frame.setLocationRelativeTo(null);
+        frame.setResizable(true);
         frame.setVisible(true);
 
         new Thread(new Runnable() {
@@ -96,8 +114,6 @@ public class GUI extends JComponent implements KeyListener {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.setColor(Color.BLACK);
-        g.fillRect(0, 0, WIDTH, HEIGHT);
         engine.render(g);
     }
     

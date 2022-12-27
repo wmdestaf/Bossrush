@@ -17,7 +17,7 @@ public class PlayerActor extends Actor {
 	private static final double DEFAULT_DX = 5.0;
 	private static final double DEFAULT_VY0 = 16; //12.0;
 	private static final double DEFAULT_G0  = 0.5;
-	private static final int DEFAULT_MAX_JUMPS = 999; //triple jump
+	private static final int DEFAULT_MAX_JUMPS = 2; //triple jump
 	
 	private boolean[] LR_Keys;
 	private long[] LR_Keys_time;
@@ -55,15 +55,8 @@ public class PlayerActor extends Actor {
 	}
 
 	@Override
-	public void render(Graphics g, Vec2 screenSize, Vec2 camera_off) {
-		g.setColor(Engine.affiliationColor(getAffiliation()));
-		
-		//Find our top-left coordinate in screen-space
-		Vec2 ssStart = GUIUtils.ss(getPos().addY(getSize()), screenSize);
-		ssStart = ssStart.add(camera_off);
-		
-		//Draw our bounding box
-		g.drawRect(ssStart.getXi(), ssStart.getYi(), getSize().getXi(), getSize().getYi());
+	public void render(Graphics g, Vec2 screenSize, Vec2 camera_off, Vec2 scale) {
+		super.render(g, screenSize, camera_off, scale);
 	}
 
 	@Override

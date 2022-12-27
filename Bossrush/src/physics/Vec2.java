@@ -1,5 +1,7 @@
 package physics;
 
+import java.awt.Dimension;
+
 import javax.print.attribute.standard.MediaSize.Other;
 
 import util.Utils;
@@ -14,6 +16,20 @@ public class Vec2 {
     public Vec2(double x, double y) {
         this.x = x;
         this.y = y;
+    }
+    
+    public Vec2(Vec2 other) {
+    	this.x = other.x;
+    	this.y = other.y;
+    }
+    
+    public Vec2(Dimension other) {
+    	this.x = other.getWidth();
+    	this.y = other.getHeight();
+    }
+    
+    public Vec2 intVec() {
+    	return new Vec2(getXi(), getYi());
     }
 
     public Vec2 dup() {
@@ -236,5 +252,9 @@ public class Vec2 {
 	public void set(Vec2 other) {
 		this.x = other.x;
 		this.y = other.y;
+	}
+
+	public Vec2 mul(double d) {
+		return this.scl(d);
 	}
 }

@@ -102,7 +102,7 @@ public class SimplePhysicsController extends PhysicsController {
 		//falling off objects
 		else if((js == JUMP_STATE.GROUNDED && !any[3]) || in.getY() == stageDim.getY()-a.getSize().getY()) { 
 			js = JUMP_STATE.JUMPING;
-			this.jumpsTaken = 1;
+			this.jumpsTaken = 0; //1;
 			this.yticks = 1.01 * vy0 / (2.0 * g0);
 		}
 		
