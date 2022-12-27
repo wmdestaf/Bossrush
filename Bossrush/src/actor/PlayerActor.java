@@ -55,12 +55,12 @@ public class PlayerActor extends Actor {
 	}
 
 	@Override
-	public void render(Graphics g, Vec2 screenSize, Vec2 stageSize, Vec2 playerPos, SCREEN_BEHAVIOR sb) {
+	public void render(Graphics g, Vec2 screenSize, Vec2 camera_off) {
 		g.setColor(Engine.affiliationColor(getAffiliation()));
 		
 		//Find our top-left coordinate in screen-space
 		Vec2 ssStart = GUIUtils.ss(getPos().addY(getSize()), screenSize);
-		ssStart = ssStart.add(GUIUtils.cameraOffsetSS(screenSize, stageSize, playerPos, sb));
+		ssStart = ssStart.add(camera_off);
 		
 		//Draw our bounding box
 		g.drawRect(ssStart.getXi(), ssStart.getYi(), getSize().getXi(), getSize().getYi());

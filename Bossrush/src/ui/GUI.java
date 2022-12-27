@@ -20,10 +20,10 @@ import ui.GUIUtils.SCREEN_BEHAVIOR;
 
 public class GUI extends JComponent implements KeyListener {
 
-	private static final int MAJOR = 0, MINOR = 1, REVISION = 0;
+	private static final int MAJOR = 0, MINOR = 2, REVISION = 0;
 	private static final long serialVersionUID = 1L;
-	private static final int WIDTH = 500;
-    private static final int HEIGHT = 300;
+	private static final int WIDTH = 500; //750; //1200;
+    private static final int HEIGHT = 300; //750;
     public static final int UPDATE_INTERVAL = 17;  // in milliseconds
 
     private static Engine engine;
@@ -32,17 +32,20 @@ public class GUI extends JComponent implements KeyListener {
     	
     	//setup the game
     	engine = new Engine();
-    	engine.configureStageSize(WIDTH, (int)(HEIGHT * (5. / 6)));
+    	engine.configureStageSize(900, 500); //(int)(HEIGHT * (5. / 6)));
     	engine.configureScreenSize(WIDTH, HEIGHT);
-    	engine.configureScreenBehavior(SCREEN_BEHAVIOR.NO_SCROLL);
-    	engine.addActor(new PlayerActor(new Vec2(200, 0), new Vec2(50, 50), AFFILIATION.BLUE, "one"));
+    	engine.configureScreenBehavior(SCREEN_BEHAVIOR.SCROLL_XY);
+    	engine.configureScale(1.5, null);
+    	engine.addActor(new PlayerActor(new Vec2(250, 0), new Vec2(50, 50), AFFILIATION.BLUE, "one"));
     	
     	//prey
     	//engine.addActor(new DummyActor(new Vec2(300, 0), new Vec2(50, 100), AFFILIATION.RED,  "two"));
     	
     	engine.addActor(new DummyActor(new Vec2(195,75), new Vec2(150,25), AFFILIATION.TERRAIN, "gnd"));
     	engine.addActor(new DummyActor(new Vec2(95,0), new Vec2(25,150), AFFILIATION.TERRAIN, "gnd2"));
-    	engine.addActor(new DummyActor(new Vec2(415,0), new Vec2(25,150), AFFILIATION.TERRAIN, "gnd2"));
+    	engine.addActor(new DummyActor(new Vec2(415,115), new Vec2(25,100), AFFILIATION.TERRAIN, "gnd3"));
+    	engine.addActor(new DummyActor(new Vec2(450,115), new Vec2(200,50), AFFILIATION.TERRAIN, "gnd4"));
+    	engine.addActor(new DummyActor(new Vec2(205,115), new Vec2(25,125), AFFILIATION.TERRAIN, "gnd4"));
     	
     	Runtime.getRuntime().addShutdownHook(new Thread() {
     		public void run() {

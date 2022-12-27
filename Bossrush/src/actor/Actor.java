@@ -9,9 +9,8 @@ import physics.PhysicsController;
 import physics.SimplePhysicsController;
 import physics.Vec2;
 import ui.GUIUtils.SCREEN_BEHAVIOR;
-import ui.Renderable;
 
-public abstract class Actor implements Renderable {
+public abstract class Actor {
 
 	private Vec2 pos; //bottom left?
 	private Vec2 size; 
@@ -22,9 +21,7 @@ public abstract class Actor implements Renderable {
 	public abstract void tick(Vec2 stageDim, ArrayList<Actor> others);
 	public abstract void onKeyPress(KeyEvent e);
 	public abstract void onKeyRelease(KeyEvent e);
-	public abstract void render(
-			Graphics g, Vec2 screenSize, Vec2 stageSize, Vec2 playerPos, SCREEN_BEHAVIOR sb
-	);
+	public abstract void render(Graphics g, Vec2 screenSize, Vec2 cam_off);
 
 	public Actor(Vec2 pos, Vec2 size, AFFILIATION a, PhysicsController p, String name) {
 		this.pos = pos;

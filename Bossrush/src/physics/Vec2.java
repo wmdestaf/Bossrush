@@ -58,8 +58,16 @@ public class Vec2 {
         return new Vec2(x + other.x, y + other.y);
     }
 
+    public Vec2 add(double a) {
+    	return new Vec2(x + a, y + a);
+    }
+    
     public Vec2 sub(Vec2 other) {
         return new Vec2(x - other.x, y - other.y);
+    }
+    
+    public Vec2 sub(double a) {
+    	return new Vec2(x - a, y - a);
     }
     
     public Vec2 mul(Vec2 other) {
@@ -70,6 +78,10 @@ public class Vec2 {
         return new Vec2(x / other.x, y / other.y);
     }
 
+    public Vec2 div(double a) {
+    	return new Vec2(x / a, y / a);
+    }
+    
     public Vec2 scl(double scalar) {
         return new Vec2(x * scalar, y * scalar);
     }
