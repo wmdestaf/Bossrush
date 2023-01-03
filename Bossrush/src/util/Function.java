@@ -3,5 +3,5 @@ package util;
 import physics.Vec2;
 
 public interface Function {
-	void a(Vec2 i);
+	Vec2 f(double t);
 }

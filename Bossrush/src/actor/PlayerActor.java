@@ -17,7 +17,7 @@ public class PlayerActor extends Actor {
 	private static final double DEFAULT_DX = 5.0;
 	private static final double DEFAULT_VY0 = 16; //12.0;
 	private static final double DEFAULT_G0  = 0.5;
-	private static final int DEFAULT_MAX_JUMPS = 2; //triple jump
+	private static final int DEFAULT_MAX_JUMPS = 999; //triple jump
 	
 	private boolean[] LR_Keys;
 	private long[] LR_Keys_time;
@@ -25,7 +25,7 @@ public class PlayerActor extends Actor {
 	public PlayerActor(Vec2 pos, Vec2 size, AFFILIATION a, String name) { 
 		super(pos, size, a, null, name);
 		super.setPhysicsController(new SimplePhysicsController(DEFAULT_DX));
-		
+
 		LR_Keys = new boolean[]{false, false};
 		LR_Keys_time = new long[] {0,0};
 	}
@@ -65,5 +65,10 @@ public class PlayerActor extends Actor {
 		if(LR_Keys[0]) pc.requestDirection(-1, LR_Keys_time[0]);
 		if(LR_Keys[1]) pc.requestDirection(+1, LR_Keys_time[1]);
 		pc.tick(this, stageDim, others);
+	}
+	
+	public void handleAfter(Vec2 stageDim) {
+		SimplePhysicsController spc = (SimplePhysicsController) super.getPhysicsController();
+		spc.firePreviousStickyCorrectionPush(this, stageDim);
 	}
 }

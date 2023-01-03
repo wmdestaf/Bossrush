@@ -1,0 +1,11 @@
+0.3.0
+
+fix strobing issue
+minimap
+
+0.4.0
+
+extendable 'animation' graphics loop
+	base image, current image
+	
+screen resize triggers resize of current image

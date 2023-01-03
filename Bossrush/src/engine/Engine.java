@@ -6,6 +6,7 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 import actor.Actor;
+import actor.PlayerActor;
 import physics.Vec2;
 import ui.GUIUtils;
 import ui.GUIUtils.SCREEN_BEHAVIOR;
@@ -31,6 +32,7 @@ public class Engine {
 		for(Actor a : actors) {
 			a.tick(stage_dim, actors);
 		}
+		((PlayerActor)actors.get(0)).handleAfter(stage_dim);
 	}
 	
 	public void drawBoundingBox(Graphics g, Vec2 camera_offset) {

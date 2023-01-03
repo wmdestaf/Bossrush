@@ -14,43 +14,76 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 import actor.DummyActor;
+import actor.MovingPlatformActor;
 import actor.PlayerActor;
 import engine.Engine;
 import engine.Engine.AFFILIATION;
+import physics.ParametricFactory;
 import physics.Vec2;
 import ui.GUIUtils.SCREEN_BEHAVIOR;
 
 public class GUI extends JComponent implements KeyListener {
 
-	private static final int MAJOR = 0, MINOR = 2, REVISION = 0;
+	private static final int MAJOR = 0, MINOR = 3, REVISION = 0;
 	private static final long serialVersionUID = 1L;
 	private static final int WIDTH = 500 ; //500; 750; //1200;
     private static final int HEIGHT = 300; //300; //450; //750;
     public static final int UPDATE_INTERVAL = 17;  // in milliseconds
 
+    public static final Vec2 INITIAL_SCALE = new Vec2(0.7, 0.7);
+    
     private static Engine engine;
     
     public static void main(String[] args) {
     	
     	//setup the game
-    	engine = new Engine();
-    	//engine.configureStageSize(WIDTH, (int)(HEIGHT * (5. / 6))); //(900, 500); 
-    	//engine.configureScreenSize(WIDTH, HEIGHT);
-    	engine.configureStageSize((int)(1.5 * WIDTH), (int)(1.5 * HEIGHT));
+     	engine = new Engine();
+    	engine.configureStageSize(1000,1000);
     	engine.configureScreenSize(WIDTH, HEIGHT);
     	
     	engine.configureScreenBehavior(SCREEN_BEHAVIOR.SCROLL_XY);
-    	engine.configureScale(1.0, 1.0);
-    	engine.addActor(new PlayerActor(new Vec2(0, 0), new Vec2(50, 50), AFFILIATION.BLUE, "one"));
+    	engine.addActor(new PlayerActor(new Vec2(0, 0), new Vec2(50, 50), AFFILIATION.BLUE, "guy"));
+
+    	//bottom 2 + connector
+    	engine.addActor(new DummyActor(new Vec2(125,125), new Vec2(75,75), AFFILIATION.TERRAIN, ""));
+    	engine.addActor(new DummyActor(new Vec2(750,125), new Vec2(75,75), AFFILIATION.TERRAIN, ""));
     	
-    	//prey
-    	//engine.addActor(new DummyActor(new Vec2(300, 0), new Vec2(50, 100), AFFILIATION.RED,  "two"));
     	
-    	engine.addActor(new DummyActor(new Vec2(195,75), new Vec2(150,25), AFFILIATION.TERRAIN, "gnd"));
-    	engine.addActor(new DummyActor(new Vec2(95,0), new Vec2(25,150), AFFILIATION.TERRAIN, "gnd2"));
-    	engine.addActor(new DummyActor(new Vec2(415,115), new Vec2(25,100), AFFILIATION.TERRAIN, "gnd3"));
-    	engine.addActor(new DummyActor(new Vec2(450,115), new Vec2(200,50), AFFILIATION.TERRAIN, "gnd4"));
-    	engine.addActor(new DummyActor(new Vec2(205,115), new Vec2(25,125), AFFILIATION.TERRAIN, "gnd4"));
+    	engine.addActor(
+    		new MovingPlatformActor(new Vec2(300,175), new Vec2(75,25), AFFILIATION.TERRAIN, "terrain",
+    			ParametricFactory.createOscillation(new Vec2(300,175), new Vec2(575,175), 300, false)
+    		)
+    	);
+
+    	//top 2 + connector
+    	engine.addActor(new DummyActor(new Vec2(125,750), new Vec2(75,75), AFFILIATION.TERRAIN, ""));
+    	engine.addActor(new DummyActor(new Vec2(750,750), new Vec2(75,75), AFFILIATION.TERRAIN, ""));
+    	engine.addActor(
+    		new MovingPlatformActor(new Vec2(200,725), new Vec2(75,25), AFFILIATION.TERRAIN, "",
+    			ParametricFactory.createOscillation(new Vec2(200,800), new Vec2(675,800), 300, false)
+    		)
+    	);
+    	
+    	engine.addActor(
+    		new MovingPlatformActor(new Vec2(200,0), new Vec2(75,75), AFFILIATION.TERRAIN, "",
+    			ParametricFactory.createOscillation(new Vec2(200,0), new Vec2(675,0), 300, false)
+    		)
+    	);
+    	
+    	
+    	//vertical connectors
+    	engine.addActor(
+    		new MovingPlatformActor(new Vec2(50,175), new Vec2(75,25), AFFILIATION.TERRAIN, "",
+    			ParametricFactory.createOscillation(new Vec2(50,175), new Vec2(50,800), 300, false)
+    		)
+    	);
+    	
+    	engine.addActor(
+    		new MovingPlatformActor(new Vec2(825,175), new Vec2(75,25), AFFILIATION.TERRAIN, "",
+    			ParametricFactory.createOscillation(new Vec2(825,175), new Vec2(825,800), 300, false)
+    		)
+    	);
+    	
     	
     	Runtime.getRuntime().addShutdownHook(new Thread() {
     		public void run() {
@@ -79,7 +112,10 @@ public class GUI extends JComponent implements KeyListener {
 	        @Override
 	        public void componentResized(ComponentEvent e) {
 	        	Vec2 newSize  = new Vec2(e.getComponent().getSize());
-	        	Vec2 newScale = new Vec2(newSize.getX() / WIDTH, newSize.getY() / HEIGHT);
+	        	Vec2 newScale = new Vec2(
+	        			INITIAL_SCALE.getX() * newSize.getX() / WIDTH, 
+	        			INITIAL_SCALE.getY() * newSize.getY() / HEIGHT
+	        	);
 	        	engine.configureScale(newScale.getX(), newScale.getY());
 	        	engine.configureScreenSize(newSize.getXi(), newSize.getYi());
 	        }

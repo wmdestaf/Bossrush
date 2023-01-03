@@ -246,7 +246,7 @@ public class Vec2 {
     
     @Override
     public String toString() {
-    	return String.format("[%03.3g,%03.3g]", getX(), getY());
+    	return String.format("[%03.0f,%03.0f]", getX(), getY());
     }
 
 	public void set(Vec2 other) {
@@ -256,5 +256,9 @@ public class Vec2 {
 
 	public Vec2 mul(double d) {
 		return this.scl(d);
+	}
+
+	public Vec2 ceil() {
+		return new Vec2(Math.ceil(x), Math.ceil(y));
 	}
 }
