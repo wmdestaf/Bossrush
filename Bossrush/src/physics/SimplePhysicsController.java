@@ -98,6 +98,9 @@ public class SimplePhysicsController extends PhysicsController {
 			boolean[] mask2 = ActorUtils.intersect(old, a.getSize(), o, Utils.itobm(0001, 4));
 			if(mask2[3] && js == JUMP_STATE.GROUNDED) {
 				in.setY(newPlatformPos.getY() + o.getSize().getY()); //handle immediately
+				Vec2 d = oo.getLastChange(0);
+				in = in.addX(d);
+				
 				lastMPCollide[1] = o;
 				excludeCollide.add(o);
 				continue;

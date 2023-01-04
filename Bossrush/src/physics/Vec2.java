@@ -261,4 +261,10 @@ public class Vec2 {
 	public Vec2 ceil() {
 		return new Vec2(Math.ceil(x), Math.ceil(y));
 	}
+	
+	public Vec2 weightedAverage(Vec2 other, double alpha) {
+	    double x = alpha * this.x + (1 - alpha) * other.x;
+	    double y = alpha * this.y + (1 - alpha) * other.y;
+	    return new Vec2(x, y);
+	}
 }

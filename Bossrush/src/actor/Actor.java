@@ -21,7 +21,7 @@ public abstract class Actor {
 	private String name;
 	private boolean platformSticky;
 	
-	private Vec2 lastSS;
+	private Vec2 lastSS; 
 	private static final int FILTER_LENGTH = 16;
 	
 	public abstract void tick(Vec2 stageDim, ArrayList<Actor> others);
@@ -44,8 +44,12 @@ public abstract class Actor {
 		
 		int xx = (int)Math.round(x);
 		int yy = (int)Math.round(y);
-		Vec2 xxyy = new Vec2(xx,yy);
-		Vec2 corrected = xxyy.sub(lastSS).len() > 2 ? xxyy : lastSS;
+		Vec2 corrected = Vec2.ZERO.dup();
+		
+		//compare differential on X and Y
+		corrected.setX(Math.abs(xx-lastSS.getX()) < 2 ? lastSS.getX() : xx);
+		corrected.setY(Math.abs(yy-lastSS.getY()) < 2 ? lastSS.getY() : yy);
+		
 		xx = corrected.getXi();
 		yy = corrected.getYi();
 		

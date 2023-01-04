@@ -20,6 +20,21 @@ public class ParametricFactory {
 		};
 	}
 	
+	public static Function createCircle(Vec2 center, double radius, double theta0, double period) {
+		Vec2 center_ = center.dup();
+		double period_factor = (2 * Math.PI) / period; 
+		
+		return new Function() {
+			@Override
+			public Vec2 f(double t) {
+				return new Vec2(
+					center_.getX() + radius * Math.cos(theta0 + (t * period_factor)),
+					center_.getY() + radius * Math.sin(theta0 + (t * period_factor))
+				);
+			}
+		};
+	}
+	
 	public static Vec2 derivative_FD(Function f, double t) {
 		return f.f(t + 1e-8).sub(f.f(t - 1e-8)).div(2 * 1e-8);
 	}

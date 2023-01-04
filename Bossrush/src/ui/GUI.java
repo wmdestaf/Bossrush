@@ -77,11 +77,32 @@ public class GUI extends JComponent implements KeyListener {
     			ParametricFactory.createOscillation(new Vec2(50,175), new Vec2(50,800), 300, false)
     		)
     	);
-    	
     	engine.addActor(
     		new MovingPlatformActor(new Vec2(825,175), new Vec2(75,25), AFFILIATION.TERRAIN, "",
     			ParametricFactory.createOscillation(new Vec2(825,175), new Vec2(825,800), 300, false)
     		)
+    	);
+    	
+    	//circles
+    	engine.addActor(
+			new MovingPlatformActor(new Vec2(825,175), new Vec2(75,25), AFFILIATION.TERRAIN, "",
+	    		ParametricFactory.createCircle(new Vec2(500,500), 200, 0, 300)
+	    	)	
+    	);
+    	engine.addActor(
+			new MovingPlatformActor(new Vec2(825,175), new Vec2(75,25), AFFILIATION.TERRAIN, "",
+	    		ParametricFactory.createCircle(new Vec2(500,500), 200, Math.PI / 2, 300)
+	    	)	
+    	);
+    	engine.addActor(
+			new MovingPlatformActor(new Vec2(825,175), new Vec2(75,25), AFFILIATION.TERRAIN, "",
+	    		ParametricFactory.createCircle(new Vec2(500,500), 200, Math.PI, 300)
+	    	)	
+    	);
+    	engine.addActor(
+			new MovingPlatformActor(new Vec2(825,175), new Vec2(75,25), AFFILIATION.TERRAIN, "",
+	    		ParametricFactory.createCircle(new Vec2(500,500), 200, 3 * Math.PI / 2, 300)
+	    	)	
     	);
     	
     	
