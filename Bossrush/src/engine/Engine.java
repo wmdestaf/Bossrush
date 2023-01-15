@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import actor.Actor;
 import actor.PlayerActor;
 import physics.Vec2;
+import ui.GUI;
 import ui.GUIUtils;
 import ui.GUIUtils.SCREEN_BEHAVIOR;
 import util.Utils;
@@ -15,7 +16,8 @@ import util.Utils;
 public class Engine {
 
 	public static enum AFFILIATION { RED, BLUE, TERRAIN };
-
+	private static final int ZOOM_GRANULARITY = 9;
+	
 	/* List of actors. First element *must* be the player. */
 	private ArrayList<Actor> actors;
 	private Vec2 screen_dim;
@@ -28,7 +30,8 @@ public class Engine {
 	public Engine() {
 		actors = new ArrayList<Actor>();
 		scale = Vec2.UNIT.dup();
-		zoom  = 0;
+		zoom  = -3 * ZOOM_GRANULARITY / 4;
+		minimapEnabled = false;
 		this.screen_behavior = SCREEN_BEHAVIOR.NO_SCROLL;
 	}
 	
@@ -43,19 +46,19 @@ public class Engine {
 		g.setColor(Color.CYAN);
 
 		//draw floor if we can see it. Floor = (0,0) + camera offset
-		int floor = GUIUtils.ss(Vec2.ZERO, screen_dim, scale.mul(zoom)).add(camera_offset).getYi();
+		int floor = GUIUtils.ss(Vec2.ZERO, screen_dim, scale, zoom).add(camera_offset).getYi();
 		g.drawLine(0, floor, screen_dim.getXi(), floor);
 		
 		//draw left wall
-		int left = GUIUtils.ss(Vec2.ZERO, screen_dim, scale.mul(zoom)).add(camera_offset).getXi();
+		int left = GUIUtils.ss(Vec2.ZERO, screen_dim, scale, zoom).add(camera_offset).getXi();
 		g.drawLine(left, 0, left, screen_dim.getYi());
 		
 		//draw right wall
-		int right = GUIUtils.ss(new Vec2(stage_dim.getX(), 0), screen_dim, scale.mul(zoom)).add(camera_offset).getXi();
+		int right = GUIUtils.ss(new Vec2(stage_dim.getX(), 0), screen_dim, scale, zoom).add(camera_offset).getXi();
 		g.drawLine(right - 1, 0, right - 1, screen_dim.getYi());
 
 		//draw top wall (out of frame)
-		int top = GUIUtils.ss(new Vec2(0, stage_dim.getY()), screen_dim, scale.mul(zoom)).add(camera_offset).getYi();
+		int top = GUIUtils.ss(new Vec2(0, stage_dim.getY()), screen_dim, scale, zoom).add(camera_offset).getYi();
 		g.drawLine(0, top + 1, screen_dim.getXi(), top + 1);
 		g.setColor(Color.CYAN);
 	}
@@ -64,17 +67,19 @@ public class Engine {
 		g.setColor(Color.BLACK);
         g.fillRect(0, 0, screen_dim.getXi(), screen_dim.getYi());
 		
+        Vec2 zoom = getInterpolatedZoom();
 		Vec2 offs = GUIUtils.cameraOffsetSS(
-			screen_dim, stage_dim, actors.get(0).getPos(), actors.get(0).getSize(), scale, getInterpolatedZoom(), screen_behavior
+			screen_dim, stage_dim, actors.get(0).getPos(), actors.get(0).getSize(), scale, zoom, screen_behavior
 		);
 		
-		drawBoundingBox(g, offs, getInterpolatedZoom());
+		drawBoundingBox(g, offs, zoom);
 		
 		for(Actor a : actors) {
-			a.render(g, screen_dim, offs, scale, getInterpolatedZoom());
+			a.render(g, screen_dim, offs, scale, zoom);
 		}
 		
 		//HUD drawing code goes here
+		//...
 	}
 	
 	public void addActor(Actor a) { 
@@ -137,17 +142,26 @@ public class Engine {
 	}
 
 	public void changeZoom(int d) {
-		this.zoom = (int) Utils.clamp(zoom - Utils.signum(d), -9, 9);
+		this.zoom = (int) Utils.clamp(zoom - Utils.signum(d), -ZOOM_GRANULARITY,  ZOOM_GRANULARITY);
 	}
 	
 	public void resetZoom() {
 		this.zoom = 0;
 	}
 
+	/**
+	 * The maximum allowed zoom is such that the maximum dimension of the player rectangle is 50% of the screen size
+	 * The minimum allowed zoom is such that the minimum dimension of the stage fits inside of the camrea
+	 * TODO: lerp
+	 */
 	public Vec2 getInterpolatedZoom() {
-		Vec2 rv = new Vec2(1.0 + zoom * 0.1, 1.0 + zoom * 0.1);
-		System.out.println(zoom + "," + rv);
-		return rv;
+		//Calculate the dimension of the stage with respect to the screen size (fit on minimum dimension)
+		//Calculate the dimension of the player with respect to the screen size (fit on 0.85 maximum dimension)
+		//ss = worldspace * scale * zoom => zoom = ss / worldspace * scale
+		Vec2 min = Vec2.fromScalar(screen_dim.mulY(5./6.).div(stage_dim.mul(scale)).max());
+		Vec2 max = Vec2.fromScalar(screen_dim.mulY(5./6. * (0.50)).div(actors.get(0).getSize().mul(scale)).min());
+		double lerp = (zoom + ZOOM_GRANULARITY) / (2. * ZOOM_GRANULARITY);
+		return min.add(max.mul(lerp));
 	}
 
 	public void configureMinimapEnabled(boolean b) {

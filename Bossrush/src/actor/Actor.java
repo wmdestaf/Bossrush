@@ -35,9 +35,9 @@ public abstract class Actor {
 	public void render(Graphics g, Vec2 screenSize, Vec2 camera_offset, Vec2 scale, Vec2 zoom) {
 		g.setColor(Engine.affiliationColor(getAffiliation()));
 		
-		Vec2 ssStart = GUIUtils.ss2(getPos().addY(getSize()), screenSize, scale.mul(zoom));
+		Vec2 ssStart = GUIUtils.ss2(getPos().addY(getSize()), screenSize, scale, zoom);
 		ssStart = ssStart.add(camera_offset);
-		Vec2 ssSize = getSize().mul(scale.mul(zoom));
+		Vec2 ssSize = getSize().mul(scale).mul(zoom);
 
 		// Calculate the top-left corner position of the rectangle
 		double x = ssStart.getX();

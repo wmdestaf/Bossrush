@@ -3,6 +3,7 @@
 Camera
 	zoom in and out on mouse scroll, clamp out at stage boundary, clamp in at 1.2x max(playerWidth, playerHeight)
 	minimap
+	drag camera + keyboard camera (ijkl)
 
 Physics
 	refactor / upstract a reasonable uml for actor physics controllers and moving platform actors

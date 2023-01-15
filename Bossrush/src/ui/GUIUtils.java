@@ -5,20 +5,20 @@ import physics.Vec2;
 public class GUIUtils {
 	public static enum SCREEN_BEHAVIOR { SCROLL_XY, SCROLL_X, SCROLL_Y, NO_SCROLL };
 	
-	public static int ssY(double y, int height, Vec2 scale) {
-		return height - (int)(y * scale.getY());
+	public static int ssY(double y, int height, Vec2 scale, Vec2 zoom) {
+		return height - (int)(y * scale.getY() * zoom.getY());
 	}
 	
-	public static Vec2 ss(Vec2 ws, Vec2 size, Vec2 scale) {
-		return new Vec2((int)(ws.getX() * scale.getX()), ssY(ws.getY(), size.getYi(), scale));
+	public static Vec2 ss(Vec2 ws, Vec2 size, Vec2 scale, Vec2 zoom) {
+		return new Vec2((int)(ws.getX() * scale.getX() * zoom.getX()), ssY(ws.getY(), size.getYi(), scale, zoom));
 	}
 	
-	public static double ssY2(double y, double height, Vec2 scale) {
-		return height - (y * scale.getY());
+	public static double ssY2(double y, double height, Vec2 scale, Vec2 zoom) {
+		return height - (y * scale.getY() * zoom.getY());
 	}
 	
-	public static Vec2 ss2(Vec2 ws, Vec2 size, Vec2 scale) {
-		return new Vec2(ws.getX() * scale.getX(), ssY(ws.getY(), size.getYi(), scale));
+	public static Vec2 ss2(Vec2 ws, Vec2 size, Vec2 scale, Vec2 zoom) {
+		return new Vec2(ws.getX() * scale.getX() * zoom.getX(), ssY(ws.getY(), size.getYi(), scale, zoom));
 	}
 	
 	//TODO - handle 'end scroll reduction' w.r.t current zoom

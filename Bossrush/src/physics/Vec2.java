@@ -268,4 +268,20 @@ public class Vec2 {
 	    double y = alpha * this.y + (1 - alpha) * other.y;
 	    return new Vec2(x, y);
 	}
+
+	public double max() {
+		return Math.max(x, y);
+	}
+	
+	public int maxi() {
+		return (int) Math.max(x, y);
+	}
+
+	public static Vec2 fromScalar(double scalar) {
+		return new Vec2(scalar, scalar);
+	}
+
+	public double min() {
+		return Math.min(x, y);
+	}
 }
