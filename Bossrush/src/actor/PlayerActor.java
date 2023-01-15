@@ -55,11 +55,6 @@ public class PlayerActor extends Actor {
 	}
 
 	@Override
-	public void render(Graphics g, Vec2 screenSize, Vec2 camera_off, Vec2 scale) {
-		super.render(g, screenSize, camera_off, scale);
-	}
-
-	@Override
 	public void tick(Vec2 stageDim, ArrayList<Actor> others) {
 		SimplePhysicsController pc = (SimplePhysicsController) super.getPhysicsController();
 		if(LR_Keys[0]) pc.requestDirection(-1, LR_Keys_time[0]);

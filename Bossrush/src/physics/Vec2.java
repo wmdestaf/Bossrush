@@ -86,6 +86,7 @@ public class Vec2 {
     	return new Vec2(x - a, y - a);
     }
     
+    //Element multiplication - use Vec2.dot otherwise.
     public Vec2 mul(Vec2 other) {
         return new Vec2(x * other.x, y * other.y);
     }
@@ -246,7 +247,7 @@ public class Vec2 {
     
     @Override
     public String toString() {
-    	return String.format("[%03.0f,%03.0f]", getX(), getY());
+    	return String.format("[%03.1f,%03.1f]", getX(), getY());
     }
 
 	public void set(Vec2 other) {

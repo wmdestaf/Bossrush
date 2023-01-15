@@ -1,6 +1,9 @@
 package actor;
 
+import java.awt.BasicStroke;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Stroke;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
@@ -29,12 +32,12 @@ public abstract class Actor {
 	public abstract void onKeyRelease(KeyEvent e);
 	
 	//Draws a simple bounding box
-	public void render(Graphics g, Vec2 screenSize, Vec2 camera_offset, Vec2 scale) {
+	public void render(Graphics g, Vec2 screenSize, Vec2 camera_offset, Vec2 scale, Vec2 zoom) {
 		g.setColor(Engine.affiliationColor(getAffiliation()));
 		
-		Vec2 ssStart = GUIUtils.ss2(getPos().addY(getSize()), screenSize, scale);
+		Vec2 ssStart = GUIUtils.ss2(getPos().addY(getSize()), screenSize, scale.mul(zoom));
 		ssStart = ssStart.add(camera_offset);
-		Vec2 ssSize = getSize().mul(scale);
+		Vec2 ssSize = getSize().mul(scale.mul(zoom));
 
 		// Calculate the top-left corner position of the rectangle
 		double x = ssStart.getX();
@@ -46,24 +49,37 @@ public abstract class Actor {
 		int yy = (int)Math.round(y);
 		Vec2 corrected = Vec2.ZERO.dup();
 		
-		//compare differential on X and Y
+		//compare differential on X and Y - low pass filter
 		corrected.setX(Math.abs(xx-lastSS.getX()) < 2 ? lastSS.getX() : xx);
 		corrected.setY(Math.abs(yy-lastSS.getY()) < 2 ? lastSS.getY() : yy);
 		
 		xx = corrected.getXi();
 		yy = corrected.getYi();
 		
+		//Account for zoom
+		
 		int ww = (int)w;
 		int hh = (int)h;
+		/*
+		int ww = (int)(w * zoom.getX());
+		int hh = (int)(h * zoom.getY());
+		*/
 		
-		g.drawRect(xx, yy, ww, hh);
+		Graphics2D g2d = (Graphics2D) g;
+	    Stroke originalStroke = g2d.getStroke();
+	    g2d.setStroke(new BasicStroke(1)); //3
 
+		g.drawRect(xx, yy, ww, hh);
+		
+		g2d.setStroke(originalStroke);
+		/*
 		//System.out.printf("%g %g %g %g\n", x,y,w,h);
 		System.out.printf("%d %d %d %d %s\n", xx,yy,ww,hh, screenSize);
 		
 		//Draw text
 		char[] pos = getPos().toString().toCharArray();
 		//g.drawChars(pos, 0, pos.length, x, (int)(y + ssSize.getYi() * 0.5));
+		*/
 		
 		this.lastSS = corrected;
 	}

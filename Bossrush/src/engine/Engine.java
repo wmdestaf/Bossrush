@@ -10,6 +10,7 @@ import actor.PlayerActor;
 import physics.Vec2;
 import ui.GUIUtils;
 import ui.GUIUtils.SCREEN_BEHAVIOR;
+import util.Utils;
 
 public class Engine {
 
@@ -21,10 +22,13 @@ public class Engine {
 	private SCREEN_BEHAVIOR screen_behavior; //scrolling, etc.
 	private Vec2 stage_dim;
 	private Vec2 scale;
+	private int zoom;
+	private boolean minimapEnabled;
 	
 	public Engine() {
 		actors = new ArrayList<Actor>();
 		scale = Vec2.UNIT.dup();
+		zoom  = 0;
 		this.screen_behavior = SCREEN_BEHAVIOR.NO_SCROLL;
 	}
 	
@@ -35,23 +39,23 @@ public class Engine {
 		((PlayerActor)actors.get(0)).handleAfter(stage_dim);
 	}
 	
-	public void drawBoundingBox(Graphics g, Vec2 camera_offset) {
+	public void drawBoundingBox(Graphics g, Vec2 camera_offset, Vec2 zoom) {
 		g.setColor(Color.CYAN);
 
 		//draw floor if we can see it. Floor = (0,0) + camera offset
-		int floor = GUIUtils.ss(Vec2.ZERO, screen_dim, scale).add(camera_offset).getYi();
+		int floor = GUIUtils.ss(Vec2.ZERO, screen_dim, scale.mul(zoom)).add(camera_offset).getYi();
 		g.drawLine(0, floor, screen_dim.getXi(), floor);
 		
 		//draw left wall
-		int left = GUIUtils.ss(Vec2.ZERO, screen_dim, scale).add(camera_offset).getXi();
+		int left = GUIUtils.ss(Vec2.ZERO, screen_dim, scale.mul(zoom)).add(camera_offset).getXi();
 		g.drawLine(left, 0, left, screen_dim.getYi());
 		
 		//draw right wall
-		int right = GUIUtils.ss(new Vec2(stage_dim.getX(), 0), screen_dim, scale).add(camera_offset).getXi();
+		int right = GUIUtils.ss(new Vec2(stage_dim.getX(), 0), screen_dim, scale.mul(zoom)).add(camera_offset).getXi();
 		g.drawLine(right - 1, 0, right - 1, screen_dim.getYi());
 
 		//draw top wall (out of frame)
-		int top = GUIUtils.ss(new Vec2(0, stage_dim.getY()), screen_dim, scale).add(camera_offset).getYi();
+		int top = GUIUtils.ss(new Vec2(0, stage_dim.getY()), screen_dim, scale.mul(zoom)).add(camera_offset).getYi();
 		g.drawLine(0, top + 1, screen_dim.getXi(), top + 1);
 		g.setColor(Color.CYAN);
 	}
@@ -61,14 +65,16 @@ public class Engine {
         g.fillRect(0, 0, screen_dim.getXi(), screen_dim.getYi());
 		
 		Vec2 offs = GUIUtils.cameraOffsetSS(
-			screen_dim, stage_dim, actors.get(0).getPos(), actors.get(0).getSize(), scale, screen_behavior
+			screen_dim, stage_dim, actors.get(0).getPos(), actors.get(0).getSize(), scale, getInterpolatedZoom(), screen_behavior
 		);
 		
-		drawBoundingBox(g, offs);
+		drawBoundingBox(g, offs, getInterpolatedZoom());
 		
 		for(Actor a : actors) {
-			a.render(g, screen_dim, offs, scale);
+			a.render(g, screen_dim, offs, scale, getInterpolatedZoom());
 		}
+		
+		//HUD drawing code goes here
 	}
 	
 	public void addActor(Actor a) { 
@@ -76,6 +82,11 @@ public class Engine {
 	}
 	
 	public void onKeyPress(KeyEvent e) {
+		//catch a 'z'
+		switch(e.getKeyCode()) {
+			case 'z': resetZoom(); return;
+		}
+		
 		for(Actor a : actors) {
 			a.onKeyPress(e);
 		}
@@ -123,5 +134,27 @@ public class Engine {
 			case TERRAIN: return Color.WHITE;
 			default:      return Color.PINK;
 		}
+	}
+
+	public void changeZoom(int d) {
+		this.zoom = (int) Utils.clamp(zoom - Utils.signum(d), -9, 9);
+	}
+	
+	public void resetZoom() {
+		this.zoom = 0;
+	}
+
+	public Vec2 getInterpolatedZoom() {
+		Vec2 rv = new Vec2(1.0 + zoom * 0.1, 1.0 + zoom * 0.1);
+		System.out.println(zoom + "," + rv);
+		return rv;
+	}
+
+	public void configureMinimapEnabled(boolean b) {
+		this.minimapEnabled = b;
+	}
+
+	public void configureActorPosition(int i, Vec2 vec2) {
+		actors.get(i).getPos().set(vec2);
 	}
 }

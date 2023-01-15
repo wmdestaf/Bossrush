@@ -28,11 +28,6 @@ public class DummyActor extends Actor {
 	}
 
 	@Override
-	public void render(Graphics g, Vec2 screenSize, Vec2 camera_offset, Vec2 scale) {
-		super.render(g, screenSize, camera_offset, scale);
-	}
-
-	@Override
 	public void tick(Vec2 stageDim, ArrayList<Actor> others) {
 
 	}

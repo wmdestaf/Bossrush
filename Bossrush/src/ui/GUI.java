@@ -7,6 +7,8 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.geom.Point2D.Double;
 
 import javax.swing.JComponent;
@@ -22,16 +24,15 @@ import physics.ParametricFactory;
 import physics.Vec2;
 import ui.GUIUtils.SCREEN_BEHAVIOR;
 
-public class GUI extends JComponent implements KeyListener {
+public class GUI extends JComponent implements KeyListener, MouseWheelListener {
 
-	private static final int MAJOR = 0, MINOR = 3, REVISION = 0;
+	private static final int MAJOR = 0, MINOR = 4, REVISION = 0;
 	private static final long serialVersionUID = 1L;
 	private static final int WIDTH = 500 ; //500; 750; //1200;
     private static final int HEIGHT = 300; //300; //450; //750;
     public static final int UPDATE_INTERVAL = 17;  // in milliseconds
 
     public static final Vec2 INITIAL_SCALE = new Vec2(0.7, 0.7);
-    
     private static Engine engine;
     
     public static void main(String[] args) {
@@ -40,7 +41,7 @@ public class GUI extends JComponent implements KeyListener {
      	engine = new Engine();
     	engine.configureStageSize(1000,1000);
     	engine.configureScreenSize(WIDTH, HEIGHT);
-    	
+    	engine.configureMinimapEnabled(false);
     	engine.configureScreenBehavior(SCREEN_BEHAVIOR.SCROLL_XY);
     	engine.addActor(new PlayerActor(new Vec2(0, 0), new Vec2(50, 50), AFFILIATION.BLUE, "guy"));
 
@@ -105,6 +106,8 @@ public class GUI extends JComponent implements KeyListener {
 	    	)	
     	);
     	
+    	//centrico
+    	engine.addActor(new DummyActor(new Vec2(450,475), new Vec2(100, 50), AFFILIATION.TERRAIN, ""));
     	
     	Runtime.getRuntime().addShutdownHook(new Thread() {
     		public void run() {
@@ -120,13 +123,14 @@ public class GUI extends JComponent implements KeyListener {
         });
     }
 
-    private static void createAndShowGUI() {
+    private static void createAndShowGUI() {    	
         JFrame frame = new JFrame(String.format("Bossrush v%d.%d.%d", MAJOR, MINOR, REVISION));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JComponent component = new GUI();
         component.setPreferredSize(new Dimension(WIDTH, HEIGHT));
         component.addKeyListener((KeyListener) component);
+        component.addMouseWheelListener((MouseWheelListener)component);
         component.setFocusable(true);
         component.addComponentListener(new ComponentAdapter() {
         	
@@ -149,14 +153,12 @@ public class GUI extends JComponent implements KeyListener {
         frame.setLocationRelativeTo(null);
         frame.setResizable(true);
         frame.setVisible(true);
-
         new Thread(new Runnable() {
             public void run() {
                 while (true) {
                     
                 	engine.tick();
                 	component.repaint();
-                    
                     
                     try {
                         Thread.sleep(UPDATE_INTERVAL);
@@ -191,4 +193,9 @@ public class GUI extends JComponent implements KeyListener {
 
 	@Override
 	public void keyTyped(KeyEvent e) {}
+
+	@Override
+	public void mouseWheelMoved(MouseWheelEvent e) {
+		engine.changeZoom(e.getWheelRotation());
+	}
 }

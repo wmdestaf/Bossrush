@@ -1,11 +1,22 @@
-0.3.0
+0.4.0 - Refactoring + QOL
 
-fix strobing issue
-minimap
+Camera
+	zoom in and out on mouse scroll, clamp out at stage boundary, clamp in at 1.2x max(playerWidth, playerHeight)
+	minimap
 
-0.4.0
+Physics
+	refactor / upstract a reasonable uml for actor physics controllers and moving platform actors
+	clean up SPC calculations as much as possible
+		evaluate whether we can handle everything in one pass	
+	timeout
+	
+	air / ground kinetic friction??
+
+0.5.0 - GFX
 
 extendable 'animation' graphics loop
 	base image, current image
 	
 screen resize triggers resize of current image
+
+abstract controls - e.g. put changeAnimationCycle in same block as calling requestJump
